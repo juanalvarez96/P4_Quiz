@@ -129,10 +129,12 @@ exports.testCmd = (rl, id) => {
             const quiz = model.getByIndex(id);
             rl.question(quiz.question + "?  ", respuesta => {
                 if (respuesta.toLowerCase().trim() === quiz.answer.toLowerCase()) {
-                    out.biglog("CORRECTO", "blue");
+                    out.log("Su respuesta es correcta")
+                    out.biglog("CORRECTO", "green");
                 }
                 else {
-                    out.biglog("INCORRECTO", "blue");
+                    out.log("Su respuesta es incorrecta")
+                    out.biglog("INCORRECTO", "red");
                 }
                 rl.prompt();
             });
@@ -160,28 +162,26 @@ exports.playCmd = rl => {
 
     const playOne = () => {
         if (toBeResolved.length === 0) {
-            out.log("Ya no quedan mas preguntas", "red");
+            out.log("Ya no quedan mas preguntas");
             out.log("Su resultado: " + score);
+            out.biglog(score,"green");
             rl.prompt();
         } else {
             let indice = Math.floor(Math.random() * toBeResolved.length);
             let id = toBeResolved[indice];
-            out.log("Antes de eliminar "+ toBeResolved);
-            out.log("El indice (aleatorio) "+ indice);
-            out.log("El id de la pregunta "+ id);
             toBeResolved.splice(indice, 1);
-            out.log(toBeResolved+ " Despues de eliminar");
             let quiz = model.getByIndex(id);
             rl.question(quiz.question + "?  ", respuesta => {
                 if (respuesta.toLowerCase().trim() === quiz.answer.toLowerCase()) {
-                    out.biglog("CORRECTO", "blue");
                     score++;
-                    out.log("Su resultado: " + score);
+                    out.log("CORRECTO - LLeva "+ score + " aciertos");
+                    out.biglog(score,"green");
                     playOne();
                 }
                 else {
-                    out.biglog("INCORRECTO", "blue");
-                    out.log("Su resultado: " + score);
+                    out.log("INCORRECTO - Fin del juego. Aciertos "+ score);
+                    out.biglog(score, "green");
+
                 }
                 rl.prompt();
             });
