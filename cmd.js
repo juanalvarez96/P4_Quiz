@@ -1,7 +1,7 @@
 const out = require('./out.js');
 const Sequelize = require('sequelize');
 
-const {models} = require('./model.js');
+const {models} = require('./model');
 
 
 /**
@@ -206,7 +206,6 @@ exports.testCmd = (rl, id) => {
             if (!quiz) {
                 throw new Error(`No existe un quiz asociado al id=${id}.`);
             }
-
             makeQuestion(rl, ` ${quiz.question} ?`)
                 .then(answer => {
                     if (answer.trim().toLowerCase() === quiz.answer.trim().toLowerCase()) {
@@ -241,58 +240,58 @@ exports.testCmd = (rl, id) => {
  * Empezar juego
  */
 exports.playCmd = rl => {
-let scores =0;
-let toBeResolved = [];
+    let scores = 0;
+    let toBeResolved = [];
+    const playOne = () =>{
+        models.quiz.findAll()
+            .then(quizzes =>{
+                for(i=0; i<quizzes.length;i++){
+                    toBeResolved[i]=quizzes[i].id;
+                }
+                console.log(toBeResolved);
+                if (toBeResolved.length === 0) {
+                    out.log("Ya no quedan mas preguntas");
+                    out.log("Su resultado: " + scores);
+                    rl.prompt();
+                } else {
+                    let indice = Math.floor(Math.random() * toBeResolved.length);
+                    let id = toBeResolved[indice];
+                    toBeResolved.splice(indice, 1);
+                    validateId(id)
+                        .then(id => models.quiz.findById(id))
+                        .then(quiz => {
+                            if (!quiz) {
+                                throw new Error(`No existe un quiz asociado al id=${id}.`);
+                            }
+                            makeQuestion(rl, ` ${quiz.question} ?`)
+                                .then(answer => {
+                                    if (answer.trim().toLowerCase() === quiz.answer.trim().toLowerCase()) {
+                                        out.log("Su respuesta es correcta");
+                                        scores++;
+                                        // out.biglog("CORRECTO", "greeen");
+                                        playOne();
+                                        rl.prompt();
+                                    }
+                                    else {
+                                        out.log("Su respuesta es incorrecta", "red");
+                                        rl.prompt();
 
+                                    }
+                                })
+                        })
 
-models.quiz.findAll()
-    .then(quizzes => {
-        let l=quizzes.length;
-        for(i=0; i<l;i++){
-            toBeResolved[i]=i;
-        }
-        return toBeResolved;
-    })
-    .then(() => {
-        const playOne = () =>{
-            if(toBeResolved.length===0){
-                out.log("Ya no quedan mas preguntas");
-                out.log("Su resultado: " + score);
-                out.biglog(score,"green");
-                rl.prompt();
-            }
-            else{
-                let indice = Math.floor(Math.random() * toBeResolved.length);
-                let id = toBeResolved[indice];
-                toBeResolved.splice(indice, 1);
-                models.quiz.findById(id)
-                    .then(quiz => {
-                        makeQuestion(rl, quiz.question + "?")
-                            .then(answer => {
-                                console.log("Ya me pasan answer");
-                                console.log(quiz.answer);
-                                if(answer.toLowerCase().trim()===quiz.answer.trim().toLowerCase()){
-                                    scores++;
-                                    out.log("CORRECTO - LLeva "+ scores + " aciertos");
-                                    playOne();
-                                }
-                                else {
-                                    out.log("INCORRECTO - Fin del juego. Aciertos "+ scores);
-
-                                }
-                                rl.prompt();
-                            })
-                    })
-            }
-        }
-        playOne();
-
-    })
-
-
-
+                }
+            })
+            .catch((error)=>{
+                console.log("No hemos encontrado todos los quizzes. error -->" + error);
+            })
+    }
+    playOne();
 
 };
+
+
+
 
 
 /**
@@ -314,6 +313,20 @@ exports.quitCmd = rl => {
 };
 
 
+/**
+ * Método que devuelve el número de quizzes existentes
+ * @return {*}
+ */
+const getNumberQuizzes = () => {
+    return new Sequelize.Promise((resolve, reject) => {
+        models.quiz.findAll()
+            .then(quizzes => {
+                let l = quizzes.length;
+                resolve(l);
+            });
+    });
+
+};
 
 
 
