@@ -299,7 +299,7 @@ const playOne = (rl, toBeResolved, scores) => {
  */
 exports.creditsCmd = rl => {
     out.log("Autor:");
-    out.log("Juan Álvarez", "green");
+    out.log("JUAN Álvarez", "green");
     rl.prompt();
 };
 
