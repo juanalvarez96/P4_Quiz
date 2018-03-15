@@ -251,7 +251,6 @@ exports.playCmd = rl => {
         })
 
 
-
 };
 
 const playOne = (rl, toBeResolved, scores) => {
@@ -278,7 +277,7 @@ const playOne = (rl, toBeResolved, scores) => {
                             out.biglog("CORRECTO", "green");
                             out.biglog(scores, "red");
                             playOne(rl, toBeResolved, scores);
-                            rl.prompt();
+
                         }
                         else {
                             out.log("Su respuesta es incorrecta", "red");
@@ -287,6 +286,7 @@ const playOne = (rl, toBeResolved, scores) => {
                         }
                     })
             })
+
 
     }
 
