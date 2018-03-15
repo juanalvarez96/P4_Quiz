@@ -281,7 +281,7 @@ const playOne = (rl, toBeResolved, scores) => {
                         }
                         else {
                             out.log("Su respuesta es incorrecta", "red");
-                            out.biglog("FIN", "blue");
+                            out.biglog("Fin", "blue");
                             rl.prompt();
 
                         }
