@@ -280,8 +280,7 @@ const playOne = (rl, toBeResolved, scores) => {
 
                         }
                         else {
-                            out.log("Su respuesta es incorrecta", "red");
-                            out.biglog("Fin", "blue");
+                            out.log("INCORRECTO - Fin del juego. Aciertos "+ scores);
                             rl.prompt();
 
                         }
