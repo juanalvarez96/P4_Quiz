@@ -22,8 +22,8 @@ exports.colorize = (msg, color) =>{
  * @param msg Text
  * @param color Color que adqueire el texto
  */
-exports.log = (msg, color) => {
-    console.log(out.colorize(msg, color));
+exports.log = (socket, msg, color) => {
+    socket.write(out.colorize(msg, color) + "\n");
 };
 
 /**
@@ -32,12 +32,12 @@ exports.log = (msg, color) => {
  * @param msg Mensaje a escribir
  * @param color Color del mensaje
  */
-exports.biglog = (msg, color) => {
-    out.log(figlet.textSync(msg, {horizontalLayout:'full'}), color);
+exports.biglog = (socket, msg, color) => {
+    out.log(socket, figlet.textSync(msg, {horizontalLayout:'full'}), color);
 };
 
-exports.errorlog = (emsg) => {
+exports.errorlog = (socket, emsg) => {
 
-    console.log(`${out.colorize("Error", "red")}: ${out.colorize(out.colorize(emsg, "red"), "bgYellowBright")}`);
+    socket.write(`${out.colorize("Error", "red")}: ${out.colorize(out.colorize(emsg, "red"), "bgYellowBright")}\n`);
 };
 
