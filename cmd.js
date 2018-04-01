@@ -92,8 +92,9 @@ exports.showCmd = (socket, rl, id) => {
  */
 const makeQuestion = (socket, rl, text) => {
     return new Sequelize.Promise((resolve, reject) => {
-        rl.question(out.colorize(text, 'red'), answer => {
+        rl.question(out.colorize(text, 'red'), (answer) => {
             resolve(answer.trim());
+
         });
     });
 };
@@ -156,16 +157,20 @@ exports.editCmd = (socket, rl, id) => {
             if (!quiz) {
                 throw new Error(`No existe un quiz asociado al id=${id}.`);
             }
-
+            /**
+            //La razón de esta linea de código esta explicada en el screencast 2 ó 3
             process.stdout.isTTY && setTimeout(() => {
                 rl.write(quiz.question), 0
             });
+             **/
             return makeQuestion(socket, rl, 'Introduzca pregunta: ')
                 .then(q => {
+                    /**
                     process.stdout.isTTY && setTimeout(() => {
                         rl.write(quiz.answer), 0
                     });
-                    return makeQuestion(socket, rl, 'Introduzca respuesta')
+                     **/
+                    return makeQuestion(socket, rl, 'Introduzca respuesta: ')
                         .then(a => {
                             quiz.answer = a;
                             quiz.question = q;
@@ -210,12 +215,12 @@ exports.testCmd = (socket, rl, id) => {
                 .then(answer => {
                     if (answer.trim().toLowerCase() === quiz.answer.trim().toLowerCase()) {
                         out.log(socket,"Su respuesta es correcta");
-                         out.biglog(socket,"CORRECTO", "greeen");
-                        rl.prompt();
+                        out.biglog(socket,"CORRECTO", "green");
+
                     }
                     else {
                         out.log(socket,"Su respuesta es incorrecta", "red");
-                        rl.prompt();
+
 
                     }
 
@@ -234,9 +239,7 @@ exports.testCmd = (socket, rl, id) => {
         .catch(error => {
             out.errorlog(socket, error.message);
         })
-        .then(() => {
-            rl.prompt();
-        })
+
 
 };
 
@@ -258,7 +261,7 @@ exports.playCmd = (socket, rl) => {
 };
 
 const playOne = (socket, rl, toBeResolved, scores) => {
-    console.log(toBeResolved);
+   // console.log(toBeResolved);
     if (toBeResolved.length === 0) {
         out.log(socket,"Ya no quedan mas preguntas");
         out.log(socket,"Su resultado: " + scores);
